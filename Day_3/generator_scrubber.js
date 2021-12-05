@@ -6,21 +6,6 @@ function loadIntoArray(fileName) {
     return data;
 }
 
-function lowestCount(array, index) {
-    let count = [0, 0];
-
-    array.forEach(number => {
-        let eachDigit = number.split('');
-
-        if (eachDigit[index] === '0')
-            count[0] += 1;
-        else if (eachDigit[index] === '1')
-            count[1] += 1;
-    })
-
-
-}
-
 function countBit(array, index, scenario) {
     let count = [0, 0];
 
@@ -52,7 +37,7 @@ function filterByBit(array, index, scenario) {
     let result = [];
 
     result = array.filter(number => {
-        if (number[0] === countBit(array, index, scenario))
+        if (number[index] === countBit(array, index, scenario))
             return number;
     })
 
@@ -61,22 +46,25 @@ function filterByBit(array, index, scenario) {
 
 function determineNumber(array, scenario) {
     let result = array;
+    let index = 0;
 
-    for (let index = 0; index < result.length; index++) {
-        result = filterByBit(array, index, scenario);
+    while (result.length > 1) {
+        result = filterByBit(result, index, scenario);
+        index++;
     }
 
-    return result;
+    return result[0];
 }
 
-let data = [
-    '00100', '11110',
-    '10110', '10111',
-    '10101', '01111',
-    '00111', '11100',
-    '10000', '11001',
-    '00010', '01010'
-]
+function convertBit(bit) {
+    let digits = parseInt(bit, 2)
 
-console.log(determineNumber(data, false));
+    return digits;
+}
 
+let data = loadIntoArray('day3_input.txt');
+
+let oxygen = convertBit(determineNumber(data, true));
+let CO2 = convertBit(determineNumber(data, false));
+
+console.log(oxygen * CO2);

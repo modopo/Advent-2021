@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { resourceLimits } = require('worker_threads');
 
 function loadNumbersCalled(fileName) {
     let data = fs.readFileSync(fileName).toString().split('\n');
@@ -38,26 +39,28 @@ function storeDrawnNumbers(data) {
 }
 
 function checkBoard(board) {
+    let win = false;
 
-    board.forEach(row => {
-        if (row.filter(number => number === 'x').length === 5)
-            return true;
-    })
+    if (!win) {
+        win = board.some(row => {
+            return row.filter(number => number === 'x').length === 5;
+        })
 
-    for (let outer = 0; outer < board.length; outer++) {
-        let count = 0;
-        for (let inner = 0; inner < board[outer].length; inner++) {
-            if (board[inner][outer] === 'x') {
-                count++;
-            }
+        for (let outer = 0; outer < board.length; outer++) {
+            let count = 0;
+            for (let inner = 0; inner < board[outer].length; inner++) {
+                if (board[inner][outer] === 'x') {
+                    count++;
+                }
 
-            if (count === 5) {
-                return true;
+                if (count === 5) {
+                    win = true;
+                }
             }
         }
     }
 
-    return false;
+    return win;
 }
 
 function checkBoards(boards) {
@@ -71,14 +74,27 @@ function checkBoards(boards) {
 function playGame(drawnNumbers, boards) {
     let solution = boards;
 
-    solution.forEach(board => {
-        drawnNumber.map(number => {
-            board = markBoard(board, number);
+    for (let index = 0; index < drawnNumbers.length; index++) {
+        solution = solution.map(board => {
+            board = markBoard(board, drawnNumbers[index]);
             return board;
-        })
-    })
+        });
 
-    console.log(checkBoards(solution));
+        let result = checkBoards(solution);
+
+        if (result.length === 1) {
+            let sum = 0;
+            result[0].forEach(row => {
+                row.forEach(number => {
+                    if (number !== 'x') {
+                        sum += Number(number);
+                    }
+                })
+            });
+
+            return sum * Number(drawnNumber[index])
+        }
+    };
 
 }
 
@@ -97,22 +113,9 @@ function markBoard(board, drawnNumber) {
     return board;
 }
 
-//let data = loadNumbersCalled('test_input.txt');
-let drawnNumber = [
-    '14', '21', '17', '24', '4',
-    '17', '23', '2', '0', '14',
-    '21', '24', '10', '16', '13',
-    '6', '15', '25', '12', '22',
-    '18', '20', '8', '19', '3',
-    '26', '1'
-]
+let data = loadNumbersCalled('day4_input.txt');
+let boards = storeBoard(data);
+let drawnNumber = storeDrawnNumbers(data);
 
-let boards = [[
-    ['14', '21', '17', '24', '4'],
-    ['10', '16', '15', '9', '19'],
-    ['18', '8', '23', '26', '20'],
-    ['22', '11', '13', '6', '5'],
-    ['2', '0', '12', '3', '7']
-]]
 
-playGame(drawnNumber, boards);
+console.log(playGame(drawnNumber, boards));

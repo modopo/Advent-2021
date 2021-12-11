@@ -84,6 +84,7 @@ function playGame(drawnNumbers, boards) {
 
         if (result.length === 1) {
             let sum = 0;
+
             result[0].forEach(row => {
                 row.forEach(number => {
                     if (number !== 'x') {

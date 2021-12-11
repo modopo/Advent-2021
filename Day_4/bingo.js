@@ -64,15 +64,20 @@ function checkBoard(board) {
 }
 
 function checkBoards(boards) {
-    let winningBoard;
+    let winningBoard = [];
 
-    winningBoard = boards.filter(board => checkBoard(board));
+    boards.forEach(board => {
+        if (checkBoard(board)) {
+            winningBoard.push(board)
+        }
+    });
 
     return winningBoard;
 }
 
 function playGame(drawnNumbers, boards) {
     let solution = boards;
+    let result = [];
 
     for (let index = 0; index < drawnNumbers.length; index++) {
         solution = solution.map(board => {
@@ -80,23 +85,54 @@ function playGame(drawnNumbers, boards) {
             return board;
         });
 
-        let result = checkBoards(solution);
+        result = checkBoards(solution);
 
         if (result.length === 1) {
-            let sum = 0;
-
-            result[0].forEach(row => {
-                row.forEach(number => {
-                    if (number !== 'x') {
-                        sum += Number(number);
-                    }
-                })
-            });
-
-            return sum * Number(drawnNumber[index])
+            return calculateScore(result[0], drawnNumber[index]);
         }
     };
 
+}
+
+function loseGame(boards, drawnNumbers) {
+    let solution = boards;
+    let result = [];
+    let completed = [];
+
+    for (let index = 0; index < drawnNumbers.length; index++) {
+        solution = solution.map(board => {
+            board = markBoard(board, drawnNumbers[index]);
+            return board;
+        });
+
+        let inGame = []
+        solution.forEach(board => {
+            if (checkBoard(board)) {
+                result.push(calculateScore(board, drawnNumber[index]));
+                completed.push(board)
+            } else {
+                inGame.push(board);
+            }
+        })
+
+        solution = inGame;
+    };
+
+    return result[result.length - 1];
+}
+
+function calculateScore(board, number) {
+    let sum = 0;
+
+    board.forEach(row => {
+        row.forEach(number => {
+            if (number !== 'x') {
+                sum += Number(number);
+            }
+        })
+    });
+
+    return sum * number;
 }
 
 function markBoard(board, drawnNumber) {
@@ -118,5 +154,5 @@ let data = loadNumbersCalled('day4_input.txt');
 let boards = storeBoard(data);
 let drawnNumber = storeDrawnNumbers(data);
 
-
 console.log(playGame(drawnNumber, boards));
+console.log(loseGame(boards, drawnNumber));

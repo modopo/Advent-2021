@@ -48,15 +48,9 @@ function determineBoard(parsed) {
 }
 
 function makeBoard(size) {
-    let board = [];
-
-    for (let index = 0; index < 3; index++) {
-        let inner = []
-        for (let index2 = 0; index2 < 3; index++) {
-            inner.push(0);
-        }
-        board.push(inner);
-    }
+    let board = [...Array(size[0])].map(() => {
+        return [...Array(size[1]).fill(-1)];
+    });
 
     return board;
 }
@@ -66,4 +60,4 @@ let parsed = parseCoordinate(raw);
 let boardSize = determineBoard(parsed);
 
 console.log(determineBoard(parsed));
-console.log(makeBoard([3, 3]));
+console.log(makeBoard(boardSize));

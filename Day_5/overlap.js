@@ -55,9 +55,14 @@ function makeBoard(size) {
     return board;
 }
 
+function plot(board, parsed) {
+
+}
+
 let raw = loadInput('test_input.txt');
 let parsed = parseCoordinate(raw);
 let boardSize = determineBoard(parsed);
 
+console.log(parsed);
 console.log(determineBoard(parsed));
 console.log(makeBoard(boardSize));

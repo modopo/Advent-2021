@@ -7,10 +7,16 @@ function loadInput(filename) {
 }
 
 function parseCoordinate(input) {
-    let coordinates = input.toString().split(' -> ');
+    let coordinates = input.map(instruction => {
+        return instruction.replace(' ->', ' ');
+    })
 
-    return coordinates;
+    return coordinates.map(coord => {
+        return coord.split(' ').filter(entry => entry !== '');
+    });
+
 }
 
 let raw = loadInput('test_input.txt');
+
 console.log(parseCoordinate(raw));

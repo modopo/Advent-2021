@@ -18,15 +18,7 @@ function parseCoordinate(input) {
 }
 
 function determineBoard(parsed) {
-    let number = [];
-
-    parsed.forEach(entry => {
-        entry.forEach(coord => {
-            coord.split(',').forEach(num => {
-                number.push(num);
-            });
-        })
-    });
+    number = flatten(parsed);
 
     let x = 0;
     let y = 0;
@@ -55,14 +47,69 @@ function makeBoard(size) {
     return board;
 }
 
-function plot(board, parsed) {
+function flatten(parsed) {
+    let number = [];
+
+    parsed.forEach(entry => {
+        entry.forEach(coord => {
+            coord.split(',').forEach(num => {
+                number.push(num);
+            });
+        })
+    });
+
+    return number;
+}
+
+function parseIntoFour(flatten) {
+    return flatten.reduce((result, number, index) => {
+        const subIndex = Math.floor(index / 4);
+
+        if (!result[subIndex]) {
+            result[subIndex] = [];
+        }
+
+        result[subIndex].push(number);
+
+        return result;
+    }, [])
+}
+
+function plot(board, flatten) {
+    let set = parseIntoFour(flatten);
+
+    set.forEach(entry => {
+        let x = entry[0];
+        let y = entry[1];
+        let a = entry[2];
+        let b = entry[3];
+
+        if (x !== a && x < a) {
+            for (let index = x; index < a; index++) {
+                board[index][y] += 1;
+            }
+        } else if (x !== a && x > a) {
+            for (let index = x; index > a; index--) {
+                board[index][y] += 1;
+            }
+        } else if (y !== b && y < b) {
+            for (let index = y; index < b; index++) {
+                board[x][index] += 1;
+            }
+        } else if (y !== b && y > b) {
+            for (let index = y; index > b; index--) {
+                board[x][index] += 1;
+            }
+        }
+    })
+
+
 
 }
 
 let raw = loadInput('test_input.txt');
 let parsed = parseCoordinate(raw);
-let boardSize = determineBoard(parsed);
+let boardSize = [4, 4];
+let board = makeBoard(boardSize);
 
-console.log(parsed);
-console.log(determineBoard(parsed));
-console.log(makeBoard(boardSize));
+console.log(board);

@@ -75,7 +75,7 @@ function parseIntoFour(flatten) {
     }, [])
 }
 
-function plot(board, flatten) {
+function plotStraight(board, flatten) {
     let set = parseIntoFour(flatten);
 
     set.forEach(entry => {

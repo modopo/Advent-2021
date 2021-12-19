@@ -1,4 +1,6 @@
 const fs = require('fs');
+const { parse } = require('path/posix');
+const { rawListeners } = require('process');
 
 function loadInput(filename) {
     let data = fs.readFileSync(filename).toString().split('\n');
@@ -75,7 +77,7 @@ function parseIntoFour(flatten) {
     }, [])
 }
 
-function plotStraight(board, parsed) {
+function plot(board, parsed) {
     let set = parseIntoFour(flatten(parsed));
 
     set.forEach(entry => {
@@ -102,6 +104,32 @@ function plotStraight(board, parsed) {
                     board[x][index] += 1;
                 }
             }
+        } else {
+            if (x < a && y < b) {
+                y -= 1;
+                for (let index = x - 1; index < a; index++) {
+                    board[index + 1][y + 1] += 1;
+                    y += 1;
+                }
+            } else if (x < a && y > b) {
+                y += 1;
+                for (let index = x - 1; index < a; index++) {
+                    board[index + 1][y - 1] += 1;
+                    y -= 1;
+                }
+            } else if (x > a && y < b) {
+                y -= 1;
+                for (let index = x + 1; index > a; index--) {
+                    board[index - 1][y + 1] += 1;
+                    y += 1;
+                }
+            } else if (x > a && y > b) {
+                y += 1;
+                for (let index = x + 1; index > a; index--) {
+                    board[index - 1][y - 1] += 1;
+                    y -= 1;
+                }
+            }
         }
     })
 
@@ -126,6 +154,6 @@ let raw = loadInput('day5_input.txt');
 let parsed = parseCoordinate(raw);
 let boardSize = determineBoard(parsed);
 let board = makeBoard(boardSize);
-let plotted = plotStraight(board, parsed);
+let plotted = plot(board, parsed);
 
 console.log(score(plotted));

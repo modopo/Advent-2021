@@ -18,7 +18,7 @@ function parseCoordinate(input) {
 }
 
 function determineBoard(parsed) {
-    number = flatten(parsed);
+    let number = flatten(parsed);
 
     let x = 0;
     let y = 0;
@@ -35,7 +35,7 @@ function determineBoard(parsed) {
         }
     };
 
-    return [Number(x), Number(y)];
+    return [Number(x) + 1, Number(y) + 1];
 
 }
 
@@ -53,7 +53,7 @@ function flatten(parsed) {
     parsed.forEach(entry => {
         entry.forEach(coord => {
             coord.split(',').forEach(num => {
-                number.push(num);
+                number.push(Number(num));
             });
         })
     });
@@ -75,8 +75,8 @@ function parseIntoFour(flatten) {
     }, [])
 }
 
-function plotStraight(board, flatten) {
-    let set = parseIntoFour(flatten);
+function plotStraight(board, parsed) {
+    let set = parseIntoFour(flatten(parsed));
 
     set.forEach(entry => {
         let x = entry[0];
@@ -84,32 +84,48 @@ function plotStraight(board, flatten) {
         let a = entry[2];
         let b = entry[3];
 
-        if (x !== a && x < a) {
-            for (let index = x; index < a; index++) {
-                board[index][y] += 1;
-            }
-        } else if (x !== a && x > a) {
-            for (let index = x; index > a; index--) {
-                board[index][y] += 1;
-            }
-        } else if (y !== b && y < b) {
-            for (let index = y; index < b; index++) {
-                board[x][index] += 1;
-            }
-        } else if (y !== b && y > b) {
-            for (let index = y; index > b; index--) {
-                board[x][index] += 1;
+        if (x === a || y === b) {
+            if (x !== a && x < a) {
+                for (let index = x; index <= a; index++) {
+                    board[index][y] += 1;
+                }
+            } else if (x !== a && x >= a) {
+                for (let index = x; index >= a; index--) {
+                    board[index][y] += 1;
+                }
+            } else if (y !== b && y <= b) {
+                for (let index = y; index <= b; index++) {
+                    board[x][index] += 1;
+                }
+            } else if (y !== b && y >= b) {
+                for (let index = y; index >= b; index--) {
+                    board[x][index] += 1;
+                }
             }
         }
     })
 
-
-
+    return board;
 }
 
-let raw = loadInput('test_input.txt');
-let parsed = parseCoordinate(raw);
-let boardSize = [4, 4];
-let board = makeBoard(boardSize);
+function score(board) {
+    let count = 0;
 
-console.log(board);
+    board.forEach(row => {
+        row.forEach(number => {
+            if (number >= 1) {
+                count++
+            }
+        })
+    })
+
+    return count;
+}
+
+let raw = loadInput('day5_input.txt');
+let parsed = parseCoordinate(raw);
+let boardSize = determineBoard(parsed);
+let board = makeBoard(boardSize);
+let plotted = plotStraight(board, parsed);
+
+console.log(score(plotted));

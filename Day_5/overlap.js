@@ -1,6 +1,4 @@
 const fs = require('fs');
-const { parse } = require('path/posix');
-const { rawListeners } = require('process');
 
 function loadInput(filename) {
     let data = fs.readFileSync(filename).toString().split('\n');

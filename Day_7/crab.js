@@ -22,6 +22,26 @@ function calculateFuel(arr, point) {
     return fuel;
 }
 
+function moreFuel(arr, point) {
+    let fuel = 0;
+
+    arr.forEach(position => {
+        fuel += addition(Math.abs(position - point));
+    })
+
+    return fuel;
+}
+
+function addition(number) {
+    let result = 0;
+
+    for (let index = 0; index < number; index++) {
+        result += index;
+    }
+
+    return result;
+}
+
 function determine(arr) {
     let sorted = arr.sort((a, b) => a - b);
     let least = calculateFuel(arr, sorted[sorted.length - 1]);
@@ -39,7 +59,25 @@ function determine(arr) {
     return least;
 }
 
+function determineNew(arr) {
+    let sorted = arr.sort((a, b) => a - b);
+    let least = moreFuel(arr, sorted[sorted.length - 1]);
+    let result = 0;
 
-let raw = intake('day6_input.txt');
+    arr.forEach(number => {
+        let test = moreFuel(arr, number);
 
-console.log(determine(raw));
+        if (test <= least) {
+            least = test;
+            result = number;
+        };
+    })
+
+    return least;
+}
+
+
+
+let raw = intake('test.txt');
+
+console.log(determineNew(raw));

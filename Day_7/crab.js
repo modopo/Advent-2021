@@ -22,8 +22,24 @@ function calculateFuel(arr, point) {
     return fuel;
 }
 
+function determine(arr) {
+    let sorted = arr.sort((a, b) => a - b);
+    let least = calculateFuel(arr, sorted[sorted.length - 1]);
+    let result = 0;
+
+    arr.forEach(number => {
+        let test = calculateFuel(arr, number);
+
+        if (test <= least) {
+            least = test;
+            result = number;
+        };
+    })
+
+    return least;
+}
 
 
-let raw = intake('test.txt');
+let raw = intake('day6_input.txt');
 
-console.log(calculateFuel(raw, middle(raw)));
+console.log(determine(raw));

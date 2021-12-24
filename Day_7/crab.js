@@ -6,11 +6,6 @@ function intake(filename) {
     return result;
 }
 
-function middle(arr) {
-    let sorted = arr.sort((a, b) => a - b);
-
-    return sorted[(Math.floor(sorted.length / 2))];
-}
 
 function calculateFuel(arr, point) {
     let fuel = 0;
@@ -35,7 +30,7 @@ function moreFuel(arr, point) {
 function addition(number) {
     let result = 0;
 
-    for (let index = 0; index < number; index++) {
+    for (let index = 0; index <= number; index++) {
         result += index;
     }
 
@@ -64,20 +59,18 @@ function determineNew(arr) {
     let least = moreFuel(arr, sorted[sorted.length - 1]);
     let result = 0;
 
-    arr.forEach(number => {
-        let test = moreFuel(arr, number);
+    for (let index = 0; index <= sorted[sorted.length - 1]; index++) {
+        result = moreFuel(arr, index);
 
-        if (test <= least) {
-            least = test;
-            result = number;
-        };
-    })
+        if (result < least) {
+            least = result;
+        }
+    }
 
     return least;
 }
 
 
 
-let raw = intake('test.txt');
-
+let raw = intake('day6_input.txt')
 console.log(determineNew(raw));

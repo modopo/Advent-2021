@@ -29,4 +29,5 @@ function unique(arr) {
 }
 
 let raw = intake('day8_input.txt');
+let test = intake('test.txt');
 console.log(unique(raw));

@@ -10,7 +10,7 @@ function intake(filename){
     return result;
 }
 
-function unique(arr) {
+function uniqueCount(arr) {
     let count = 0;
 
     arr.forEach(pair => {
@@ -28,7 +28,7 @@ function unique(arr) {
     return count;
 }
 
-function analysis(sequence) {
+function unique(sequence) {
     let signals = sequence.split(" ");
     let keys = [];
 
@@ -53,6 +53,52 @@ function analysis(sequence) {
     return keys;
 }
 
-let raw = intake('day8_input.txt');
-let test = intake('test.txt');
-console.log((analysis(raw[0][0])));
+function compareShortToLong(str1, str2) {
+    let split1 = str1.split('');
+    let split2 = str2.split('');
+    let result1 = split1.filter(letter => {
+        return split2.indexOf(letter) === -1;
+    });
+
+    let result2 = split2.filter(letter => {
+        return split1.indexOf(letter) === -1;
+    })
+
+    return result1;
+}
+
+function deduction(sequence) {
+    
+    let linePosition = [];
+    let sixLength = [];
+    let deduced = unique(sequence);
+
+    sequence.forEach(str => {
+        if (str.length === 6) {
+            sixLength.push(str);
+        }
+    })
+
+    sixLength.forEach(str => {
+        if (compareShortToLong(deduced[4], str).length !== 0) {
+            deduced[6] = str;
+        }
+    });
+
+    linePosition[2] = compareShortToLong(deduced[4], deduced[6])[0];
+
+    console.log(linePosition[2]);
+
+    
+}
+
+
+//let raw = intake('day8_input.txt');
+
+let raw = intake('test1.txt');
+let test = unique(raw[0][0]);
+
+console.log(raw);
+console.log(test[4]);
+console.log(compareShortToLong('abfg', 'acdefg'));
+//deduction(raw);

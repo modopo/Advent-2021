@@ -123,11 +123,46 @@ function numberPattern(deduction) {
     return pattern;
 }
 
+function total(sequence) {
+    let count = 0;
+    let firstHalf = []
+    let secondHalf = [];
+
+    sequence.forEach(line => {
+        let front = line[0].split(' ').map(letter => {
+            return letter.split('').sort().join('');
+        }).join(' ');
+
+        let back = line[1].split(' ').map(letter => {
+            return letter.split('').sort().join('');
+        }).join(' ');
+
+        firstHalf.push(front);
+        secondHalf.push(back);
+        
+    })
+
+    let result = []
+
+    for (let index = 0; index < firstHalf.length; index++) {
+        let tempDeduction = deduction(firstHalf[index]);
+        let tempPattern = numberPattern(tempDeduction);
+        let temp = secondHalf[index];
+        let numberResult = '';
+
+        temp.split(' ').forEach(number => {
+            numberResult += String(tempPattern.indexOf(number));
+        })
+        
+        result.push(Number(numberResult));
+    }
+
+    return result.reduce((accum, current) => {
+        return accum + current;
+    });
+}
+
 //let raw = intake('day8_input.txt');
 
-let raw = intake('test1.txt');
-let key = deduction(raw[0][0]);
-
-console.log(numberPattern(key));
-
-console.log(deduction(raw[0][0]));
+let raw = intake('day8_input.txt');
+console.log(total(raw));

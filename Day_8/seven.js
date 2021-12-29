@@ -1,11 +1,11 @@
 const fs = require('fs');
 
-function intake(filename){
+function intake(filename) {
     let temp = fs.readFileSync(filename).toString().split('\n');
     let result = []
     temp.forEach(sequence => {
         result.push(sequence.split(" | "));
-    })    
+    })
 
     return result;
 }
@@ -20,8 +20,8 @@ function uniqueCount(arr) {
                 sequence.length === 4 ||
                 sequence.length === 3 ||
                 sequence.length === 7) {
-                    count +=1;
-                }
+                count += 1;
+            }
         });
     });
 
@@ -32,10 +32,10 @@ function unique(sequence) {
     let signals = sequence.split(" ");
     let keys = [];
 
-    signals.forEach(output =>{
+    signals.forEach(output => {
         let temp = output.split('').sort().join('');
         switch (output.length) {
-            case 2: 
+            case 2:
                 keys[1] = temp;
                 break;
             case 3:
@@ -68,37 +68,66 @@ function compareShortToLong(str1, str2) {
 }
 
 function deduction(sequence) {
-    
+    let seqArr = sequence.split(' ').map(seq => {
+        return seq.split('').sort().join('');
+    });
+
     let linePosition = [];
     let sixLength = [];
     let deduced = unique(sequence);
 
-    sequence.forEach(str => {
+    seqArr.forEach(str => {
         if (str.length === 6) {
             sixLength.push(str);
         }
     })
 
+
     sixLength.forEach(str => {
-        if (compareShortToLong(deduced[4], str).length !== 0) {
-            deduced[6] = str;
+        if (compareShortToLong(deduced[1], str).length !== 0) {
+            deduced[6] = str.split('').sort().join('');
+        } else if (compareShortToLong(deduced[4], str).length === 0) {
+            deduced[9] = str.split('').sort().join('');
+        } else {
+            deduced[0] = str.split('').sort().join('');
         }
     });
 
     linePosition[2] = compareShortToLong(deduced[4], deduced[6])[0];
+    linePosition[0] = compareShortToLong(deduced[7], deduced[1])[0];
+    linePosition[5] = compareShortToLong(deduced[1], linePosition[2])[0];
+    linePosition[3] = compareShortToLong(deduced[9], deduced[0])[0];
+    linePosition[4] = compareShortToLong(deduced[0], deduced[9])[0];
 
-    console.log(linePosition[2]);
+    let temp = [...linePosition].sort().join('');
+    linePosition[1] = compareShortToLong(deduced[4], temp)[0];
+    temp = [...linePosition].sort().join('');
+    linePosition[6] = compareShortToLong(deduced[8], temp)[0];
 
-    
+    return linePosition;
 }
 
+function numberPattern(deduction) {
+    let pattern = [];
+
+    pattern[0] = (deduction[0] + deduction[1] + deduction[2] + deduction[4] + deduction[5] + deduction[6]).split('').sort().join('');
+    pattern[1] = (deduction[2] + deduction[5]).split('').sort().join('');
+    pattern[2] = (deduction[0] + deduction[2] + deduction[3] + deduction[4] + deduction[6]).split('').sort().join('');
+    pattern[3] = (deduction[0] + deduction[2] + deduction[3] + deduction[5] + deduction[6]).split('').sort().join('');
+    pattern[4] = (deduction[1] + deduction[2] + deduction[3] + deduction[5]).split('').sort().join('');
+    pattern[5] = (deduction[0] + deduction[1] + deduction[3] + deduction[5] + deduction[6]).split('').sort().join('');
+    pattern[6] = (deduction[0] + deduction[1] + deduction[3] + deduction[4] + deduction[5] + deduction[6]).split('').sort().join('');
+    pattern[7] = (deduction[0] + deduction[2] + deduction[5]).split('').sort().join('');
+    pattern[8] = (deduction[0] + deduction[1] + deduction[2] + deduction[3] + deduction[4] + deduction[5] + deduction[6]).split('').sort().join('');
+    pattern[9] = (deduction[0] + deduction[1] + deduction[2] + deduction[3] + deduction[5] + deduction[6]).split('').sort().join('');
+    return pattern;
+}
 
 //let raw = intake('day8_input.txt');
 
 let raw = intake('test1.txt');
-let test = unique(raw[0][0]);
+let key = deduction(raw[0][0]);
 
-console.log(raw);
-console.log(test[4]);
-console.log(compareShortToLong('abfg', 'acdefg'));
-//deduction(raw);
+console.log(numberPattern(key));
+
+console.log(deduction(raw[0][0]));

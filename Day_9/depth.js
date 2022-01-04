@@ -8,4 +8,14 @@ function intake(filename) {
     });
 }
 
+function checkSurrounding(map) {
+    let result = [];
+
+    for(let outer = 0; outer < map.length; outer++) {
+        for(let inner = 0; inner < map[outer].length; inner++) {
+
+        }
+    }
+}
+
 console.log(intake('test.txt'));
